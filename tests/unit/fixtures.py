@@ -53,7 +53,31 @@ def get_banded_upper_systems():
     x1 = np.array([3 - 6.3j, 2.1j])
     d1 = 1
 
+
+    A2 = np.array([
+        [3.2j, 1, 0],
+        [0, 5, 2],
+        [0, 0, 1]
+    ])
+    b2 = np.array([1, 2, 3])
+    x2 = np.array([-9j/16, -4/5, 3])
+    d2 = 1
+
+    A3 = np.array([
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+    ])
+    b3 = np.array([
+        1, 2, 3j
+    ])
+    x3 = np.array([1, 2, 3j])
+    d3 = 0
+
     return (
         (A1, b1, x1, d1),
+        (A2, b2, x2, d2),
+        (A3, b3, x3, d3)
     )
+
     
