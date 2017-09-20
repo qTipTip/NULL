@@ -80,4 +80,29 @@ def get_banded_upper_systems():
         (A3, b3, x3, d3)
     )
 
-    
+@pytest.fixture()
+def get_banded_matrices():
+
+    A1 = np.array([[1.2]])
+    L1 = np.array([[1]])
+    U1 = np.array([[1.2]])
+    d1 = 0
+
+    A2 = np.array([
+        [2.3j, 1],
+        [2, 4]
+    ])
+    L2 = np.array([
+        [1, 0],
+        [-2j / 2.3, 1]
+    ])
+    U2 = np.array([
+        [2.3j, 1],
+        [0, 4 + 2j / 2.3]
+    ])
+    d2 = 1
+
+    return (
+        (A1, d1, L1, U1),
+        (A2, d2, L2, U2)
+    )

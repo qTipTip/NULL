@@ -44,3 +44,25 @@ def rbackwardsolve(A, b, d):
         x[k] = (b[k] - np.dot(A[k, k+1:uk+1], x[k+1:uk+1])) / A[k, k]
 
     return x
+
+def L1U(A, d):
+    """
+    Given a matrix A with non-singular leading submatrices with bandwidth d, computes
+    the matrices L, U such that A = LU
+    :param A: nxn matrix d-banded
+    :param d: bandwidth
+    :return: L, U
+    """
+
+    n, _ = A.shape
+    L = np.eye(n, n, dtype=A.dtype)
+    U = np.zeros((n, n), dtype=A.dtype)
+
+    U[0, 0] = A[0, 0]
+    for k in range(1, n):
+        km = max(0, k-d)
+        L[k, km : k] = rforwardsolve(U[km:k, km:k].T, A[k, km:k].T, d).T
+        U[km:k+1, k] = rforwardsolve(L[km:k+1, km:k+1], A[km:k+1, k], d)
+
+    return L, U
+
