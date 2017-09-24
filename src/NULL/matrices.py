@@ -66,3 +66,28 @@ def L1U(A, d):
 
     return L, U
 
+def PLU(A, d):
+    """
+    Given a matrix A with non-singular leading submatrices and bandwidth d,
+    computes the matrices P, L, U such that A = PLU where P is a permutation
+    matrix.
+    :param A: nxn matrix d-banded
+    :return: PLU matrix
+    """
+    n, _ = A.shape
+    P = np.eye(n, n, dtype=A.dtype)
+    L = np.eye(n, n, dtype=A.dtype) 
+    U = np.copy(A)
+    
+    for k in range(n-1):
+        i = np.argmax(np.abs(U[k:, k]))
+
+        U[[k, i], k:] = U[[i, k], k:]
+        L[[k, i], :k] = L[[i, k], :k]
+        P[[k, i], :] = P[[i, k], :]
+
+        for j in range(k+1, n):
+            L[j, k] = U[j, k] / U[k, k]
+            U[j, k : n] = U[j, k : n] - L[j, k]*U[k, k:n]
+
+    return P, L, U
