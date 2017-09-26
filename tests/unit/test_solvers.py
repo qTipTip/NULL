@@ -1,7 +1,9 @@
-import pytest
 import numpy as np
-from src.NULL.matrices import rforwardsolve, rbackwardsolve, L1U, PLU, housegen
-from .fixtures import get_banded_lower_systems, get_banded_upper_systems, get_banded_matrices, get_PLU_matrices, get_householder_vectors
+import pytest
+
+from NULL import rforwardsolve, rbackwardsolve, L1U, PLU, housegen
+from .fixtures import get_banded_lower_systems, get_banded_upper_systems, get_banded_matrices, get_PLU_matrices, \
+    get_householder_vectors
 
 
 @pytest.mark.forward

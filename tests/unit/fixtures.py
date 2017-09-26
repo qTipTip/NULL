@@ -1,8 +1,6 @@
-import pytest
 import numpy as np
-import scipy.linalg as la
+import pytest
 
-from src.NULL.matrices import L1U
 
 @pytest.fixture()
 def get_banded_lower_systems():
