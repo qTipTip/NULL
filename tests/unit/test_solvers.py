@@ -28,10 +28,13 @@ def test_L1U(A, d, L, U):
 
 
 @pytest.mark.decomposition
-@pytest.mark.parametrize("A, d, P, L, U", get_PLU_matrices())
-def test_PLU(A, d, P, L, U):
-    computed_P, computed_L, computed_U = PLU(A, d)
+@pytest.mark.parametrize("A, P, L, U", get_PLU_matrices())
+def test_PLU(A, P, L, U):
+    computed_P, computed_L, computed_U = PLU(A)
     
     np.testing.assert_almost_equal(computed_P, P)
-    np.testing.assert_almost_equal(computed_L, L)
-    np.testing.assert_almost_equal(computed_U, U)
+    np.testing.assert_almost_equal(computed_L, L, decimal=6)
+    np.testing.assert_almost_equal(computed_U, U, decimal=6)
+
+    computed_A = P.T.dot(L).dot(U)
+    np.testing.assert_almost_equal(computed_A, A, decimal=4)

@@ -18,6 +18,7 @@ def rforwardsolve(A, b, d):
     x[0] = b[0] / A[0, 0]
     for k in range(1, n):
         lk = max(0, k-d)
+        print(A[k, k])
         x[k] = (b[k] - np.dot(A[k, lk : k], x[lk : k])) / A[k, k]
 
     return x
@@ -61,17 +62,16 @@ def L1U(A, d):
     U[0, 0] = A[0, 0]
     for k in range(1, n):
         km = max(0, k-d)
-        L[k, km : k] = rforwardsolve(U[km:k, km:k].T, A[k, km:k].T, d).T
+        L[k, km : k] = np.transpose(rforwardsolve(np.transpose(U[km:k, km:k]),\
+                                                  np.transpose(A[k, km:k]), d))
         U[km:k+1, k] = rforwardsolve(L[km:k+1, km:k+1], A[km:k+1, k], d)
-
     return L, U
 
-def PLU(A, d):
+def PLU(A):
     """
-    Given a matrix A with non-singular leading submatrices and bandwidth d,
-    computes the matrices P, L, U such that A = PLU where P is a permutation
-    matrix.
-    :param A: nxn matrix d-banded
+    Given a matrix A computes the matrices P, L, U such that A = PLU where P is
+    a permutation matrix.
+    :param A: nxn matrix
     :return: PLU matrix
     """
     n, _ = A.shape
@@ -80,7 +80,7 @@ def PLU(A, d):
     U = np.copy(A)
     
     for k in range(n-1):
-        i = np.argmax(np.abs(U[k:, k]))
+        i = np.argmax(np.abs(U[k:, k])) + k # index of row with highest absolute value in column k
 
         U[[k, i], k:] = U[[i, k], k:]
         L[[k, i], :k] = L[[i, k], :k]
@@ -91,3 +91,18 @@ def PLU(A, d):
             U[j, k : n] = U[j, k : n] - L[j, k]*U[k, k:n]
 
     return P, L, U
+
+def LU_solve(A, d, b):
+    """
+    Given a matrix A with bandwidth d and a right hand side b, computes x such
+    that Ax = b using the L1U factorization.
+    :param A: nxn matrix
+    :return: PLU matrix
+    """
+
+    L, U = L1U(A, d)
+
+    y = rforwardsolve(L, b, d)
+    x = rbackwardsolve(U, y, d)
+
+    return x
