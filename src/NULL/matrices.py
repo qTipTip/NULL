@@ -86,7 +86,7 @@ def PLU(A):
 
         U[[k, i], k:] = U[[i, k], k:]
         L[[k, i], :k] = L[[i, k], :k]
-        P[[k, i], :] = P[[i, k], :]
+        P[:, [k, i]] = P[:, [i, k]]
 
         for j in range(k+1, n):
             L[j, k] = U[j, k] / U[k, k]
@@ -174,5 +174,19 @@ def gaussian_elimination(A, b):
     
     # solve by back subistitution
     x = rbackwardsolve(U, b, m)
+
+    return x
+
+def gaussian_elimination_pivots(A, b):
+    """
+    Given an nxn matrix A and a right hand side b, computes
+    the matrices P, L, U such that A = PLU,
+    then computes x such that LUx = (P.T)b.
+    """
+
+    P, L, U = PLU(A)
+    n,_ = A.shape
+    y = rforwardsolve(L, (P.T).dot(b), n)
+    x = rbackwardsolve(U, y, n)
 
     return x
