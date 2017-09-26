@@ -148,7 +148,20 @@ def housetriang(A, B):
         _, r = B.shape
     except:
         r = 1
-    
+
+    A = np.hstack((A, B))
+
+    for k in range(min(n, m-1)):
+        v, A[k, k] = housegen(A[k:m, k])
+        v = np.reshape(v, (m-k, 1))
+        C = A[k:m, k+1:n+r]
+        A[k:m, k+1:n+r] = C -  v * np.dot(np.conjugate(v).T, C)
+
+    R = np.triu(A[:, 0:n])
+    C = A[:, n:n+r]
+
+    return R, C
+
 def gaussian_elimination(A, b):
     """
     Given a (nxn) matrix A and a right hand side b, computes x such that Ax =
@@ -188,5 +201,23 @@ def gaussian_elimination_pivots(A, b):
     n,_ = A.shape
     y = rforwardsolve(L, (P.T).dot(b), n)
     x = rbackwardsolve(U, y, n)
+
+    return x
+
+def housetriang_solve(A, b):
+    """
+    Given an nxn matrix A and a right hand side b, computes the matrix
+    R and the vector c such that
+    Rx = c, where R is upper triangular. Hence can be solved by back-substitution.
+    :param A: nxn matrix A
+    :param b: right hand side
+    :return: x such that Ax = b
+    """
+
+    n, _ = A.shape
+    b.shape = (n, 1)
+    R, c = housetriang(A, b)
+    x = np.reshape(rbackwardsolve(R, c, n), (n,))
+
 
     return x
