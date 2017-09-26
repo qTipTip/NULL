@@ -46,3 +46,31 @@ def test_housegen(x, u, a):
 
     np.testing.assert_almost_equal(computed_u, u)
     np.testing.assert_almost_equal(computed_a, a) 
+
+@pytest.mark.lu
+def test_L1U_specific():
+    
+    A = np.array([
+        [1, 2, 2],
+        [2, 2, 1],
+        [1, 2, 3]
+    ], dtype=np.float64)
+
+    L = np.array([
+        [1, 0, 0],
+        [2, 1, 0],
+        [1, 0, 1]
+    ])
+
+    U = np.array([
+        [1, 2, 2],
+        [0, -2, -3],
+        [0, 0, 1]
+    ])
+    d = 2
+    computed_L, computed_U = L1U(A, d)
+
+    np.testing.assert_almost_equal(computed_U, U)
+    np.testing.assert_almost_equal(computed_L, L)
+
+

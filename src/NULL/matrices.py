@@ -9,18 +9,19 @@ def rforwardsolve(A, b, d):
     :param d: band-width of A
     :return: n-vector x
     """
+    
+    
 
     n = len(b)
     if np.iscomplexobj(A) or np.iscomplexobj(b):
         A = A.astype('complex128')
         b = b.astype('complex128')
-    x = b
-    x[0] = b[0] / A[0, 0]
+    x = b.copy()
+    x[0] = x[0] / A[0, 0]
     for k in range(1, n):
         lk = max(0, k-d)
-        print(A[k, k])
-        x[k] = (b[k] - np.dot(A[k, lk : k], x[lk : k])) / A[k, k]
-
+        x[k] = b[k] - np.dot(A[k, lk : k], x[lk : k])
+        x[k] = x[k] / A[k, k] 
     return x
 
 def rbackwardsolve(A, b, d):
@@ -37,7 +38,7 @@ def rbackwardsolve(A, b, d):
     if np.iscomplexobj(A) or np.iscomplexobj(b):
         A = A.astype('complex128')
         b = b.astype('complex128')
-    x = b
+    x = b.copy()
     x[n-1] = b[n-1] / A[n-1, n-1]
 
     for k in range(n-2, -1, -1):
@@ -54,6 +55,7 @@ def L1U(A, d):
     :param d: bandwidth
     :return: L, U
     """
+    
 
     n, _ = A.shape
     L = np.eye(n, n, dtype=A.dtype)
@@ -94,11 +96,13 @@ def PLU(A):
 
 def LU_solve(A, d, b):
     """
-    Given a matrix A with bandwidth d and a right hand side b, computes x such
-    that Ax = b using the L1U factorization.
+    Given a matrix A with bandwidth d and nonsingular principal submatrices and
+    a right hand side b, computes x such that Ax = b using the L1U
+    factorization.
     :param A: nxn matrix
     :return: PLU matrix
     """
+    
 
     L, U = L1U(A, d)
 
@@ -131,3 +135,44 @@ def housegen(x):
     a = -r*a
 
     return u, a
+
+def housetriang(A, B):
+    """
+    Given a (mxn) matrix A, and a set of right hand sides B (mxr),
+    computes the householder transformations H1, ..., Hs such that
+    R = Hs...H1A is upper trapezoidal and C = Hs...H1B.
+    """
+
+    m, n = A.shape
+    try:
+        _, r = B.shape
+    except:
+        r = 1
+    
+def gaussian_elimination(A, b):
+    """
+    Given a (nxn) matrix A and a right hand side b, computes x such that Ax =
+    b. """
+    
+    m, n = A.shape
+    U = A.copy() 
+    b = b.copy()
+
+    # forward sweep, reduce A to a upper triangular matrix
+    for k in range(min(m, n)):
+        swap = np.argmax(np.abs(U[k:, k])) + k
+        if U[swap, k] == 0:
+            raise ValueError('Singular matrix')
+        U[[k, swap], :] = U[[swap, k], :]
+        b[[k, swap]] = b[[swap, k]]
+        
+        for i in range(k + 1, m):
+            factor = U[i, k] / U[k, k]
+            b[i] = b[i] - factor*b[k]
+            U[i, k+1:] = U[i, k+1:] - U[k, k+1:] * factor
+            U[i, k] = 0
+    
+    # solve by back subistitution
+    x = rbackwardsolve(U, b, m)
+
+    return x

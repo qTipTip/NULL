@@ -222,3 +222,4 @@ def get_householder_vectors():
         pytest.mark.xfail(reason='Must have computed the wrong analytical answer')((x2, u2, a2)),
         (x3, u3, a3) 
 )
+
