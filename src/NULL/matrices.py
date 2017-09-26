@@ -106,3 +106,28 @@ def LU_solve(A, d, b):
     x = rbackwardsolve(U, y, d)
 
     return x
+
+def housegen(x):
+    """
+    Given an n-vector x, returns the vector u and constant a such that
+    (I - uu*)x = a*e_1
+    """
+
+    a = np.linalg.norm(x)
+    if a == 0:
+        u = x
+        u[0] = np.sqrt(2)
+        return u, a
+    
+    if x[0] == 0:
+        r = 1
+    else:
+        r = x[0] / abs(x[0])
+
+    u = np.conj(r) * x / a
+    u[0] = u[0] + 1
+    u = u / np.sqrt(u[0])
+    
+    a = -r*a
+
+    return u, a

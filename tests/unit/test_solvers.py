@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
-from src.NULL.matrices import rforwardsolve, rbackwardsolve, L1U, PLU
-from .fixtures import get_banded_lower_systems, get_banded_upper_systems, get_banded_matrices, get_PLU_matrices
+from src.NULL.matrices import rforwardsolve, rbackwardsolve, L1U, PLU, housegen
+from .fixtures import get_banded_lower_systems, get_banded_upper_systems, get_banded_matrices, get_PLU_matrices, get_householder_vectors
 
 
 @pytest.mark.forward
@@ -38,3 +38,11 @@ def test_PLU(A, P, L, U):
 
     computed_A = P.T.dot(L).dot(U)
     np.testing.assert_almost_equal(computed_A, A, decimal=4)
+
+@pytest.mark.transformation
+@pytest.mark.parametrize("x, u, a", get_householder_vectors())
+def test_housegen(x, u, a):
+    computed_u, computed_a = housegen(x)
+
+    np.testing.assert_almost_equal(computed_u, u)
+    np.testing.assert_almost_equal(computed_a, a) 

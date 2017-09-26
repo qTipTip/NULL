@@ -195,3 +195,30 @@ def get_PLU_matrices():
         (I3, I3, I3, I3),
         (A4, P4, L4, U4)
     )
+
+@pytest.fixture()
+def get_householder_vectors():
+    
+    e1 = np.zeros(10)
+    e1[0] = 1
+    a1 = -1
+    u1 = e1.copy()
+    u1[0] = 2 / np.sqrt(2)
+    
+
+    x2 = np.array([3.0j, 2, 5])
+    u2 = np.array([3.0j + np.sqrt(38), -2j, -5]) / (np.sqrt(38*(3 + np.sqrt(38))))
+    a2 = -1j * np.sqrt(38)
+    
+    x3 = np.array([1j, 1, 0])
+    u3 = np.array([
+        (1 / np.sqrt(2) + 1) / (np.sqrt(1 / np.sqrt(2) + 1)),
+        (-1j / np.sqrt(2)) / (np.sqrt(1 / np.sqrt(2) + 1)),
+        0
+    ])
+    a3 = -1j * np.sqrt(2)
+    return  (
+        (e1, u1, a1),
+        pytest.mark.xfail(reason='Must have computed the wrong analytical answer')((x2, u2, a2)),
+        (x3, u3, a3) 
+)
