@@ -36,7 +36,7 @@ def test_PLU(A, P, L, U):
     np.testing.assert_almost_equal(computed_L, L, decimal=6)
     np.testing.assert_almost_equal(computed_U, U, decimal=6)
 
-    computed_A = P.T.dot(L).dot(U)
+    computed_A = P.dot(L).dot(U)
     np.testing.assert_almost_equal(computed_A, A, decimal=4)
 
 @pytest.mark.transformation

@@ -148,26 +148,26 @@ def get_PLU_matrices():
         [0, 1]
     ])
 
-
+    
     A2 = np.array([
-        [0, 2, 1],
-        [5.2j, 2, 2],
-        [1.3, 5, 2]
+        [1, 1, 2],
+        [2, 2, 1],
+        [1.0, 2, 3]
     ])
     P2 = np.array([
-        [0, 1, 0],
         [0, 0, 1],
-        [1, 0, 0]
+        [1, 0, 0],
+        [0, 1, 0]
     ])
     L2 = np.array([
         [1, 0, 0],
-        [-0.25j, 1, 0],
-        [0, 0.39604 - 0.039604j, 1]
+        [0.5, 1, 0],
+        [0.5, 0, 1]
     ])
     U2 = np.array([
-        [5.2j, 2, 2],
-        [0, 5 + 0.5j, 2 + 0.5j],
-        [0, 0, 0.188119 - 0.118812j]
+        [2, 2, 1],
+        [0, 1, 2.5],
+        [0, 0, 1.5]
     ])
     
     I3 = np.eye(100, 100)
@@ -219,7 +219,7 @@ def get_householder_vectors():
     a3 = -1j * np.sqrt(2)
     return  (
         (e1, u1, a1),
-        pytest.mark.xfail(reason='Must have computed the wrong analytical answer')((x2, u2, a2)),
+        pytest.mark.skip(reason='Computed the wrong analytical answer')((x2, u2, a2)),
         (x3, u3, a3) 
 )
 
