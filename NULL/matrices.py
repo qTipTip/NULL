@@ -149,7 +149,7 @@ def housetriang(A, B):
     except:
         r = 1
 
-    A = np.hstack((A, B))
+    A = np.hstack((A.copy(), B.copy()))
 
     for k in range(min(n, m-1)):
         v, A[k, k] = housegen(A[k:m, k])
@@ -215,7 +215,7 @@ def housetriang_solve(A, b):
     """
 
     n, _ = A.shape
-    b.shape = (n, 1)
+    b = np.reshape(b.copy(), (n, 1))
     R, c = housetriang(A, b)
     x = np.reshape(rbackwardsolve(R, c, n), (n,))
 
